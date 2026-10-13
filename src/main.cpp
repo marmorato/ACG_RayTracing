@@ -17,10 +17,12 @@
 
 #include "shaders/intersectionshader.h"
 #include "shaders/depthshader.h"
-
+#include "shaders/normalshader.h"
+#include "shaders/whittedintegrator.h"
 
 #include "materials/phong.h"
 #include "materials/emissive.h"
+
 
 #include <chrono>
 
@@ -198,10 +200,13 @@ void PaintImage(Film* film)
         for (size_t col = 0; col < resX; col++)
         { 
             //CHANGE...()
-            Vector3D random_color = Vector3D((double)rand() / RAND_MAX, (double)rand() / RAND_MAX, (double)rand() / RAND_MAX);            
-            film->setPixelValue(col,lin, random_color);
-           
-        }
+            double red = (double)col / resX;
+            double green = (double)lin / resY;
+
+                Vector3D color(red, green, 0.0);
+
+                film->setPixelValue(col, lin, color);
+            }
     }
 }
 
@@ -220,10 +225,19 @@ int main()
     Vector3D bgColor(0.0, 0.0, 0.0); // Background color (for rays which do not intersect anything)
     Vector3D intersectionColor(1,0,0);
     
-    //First Assignment
-    Shader *shader = new IntersectionShader (intersectionColor, bgColor);
-    //Shader *depthshader = new DepthShader (intersectionColor,7.5f, bgColor);
+    //task 2
+    //Shader *shader = new IntersectionShader (intersectionColor, bgColor);
+    
+    //TASK 3 (depth shader)
+    //Shader *shader = new DepthShader (intersectionColor,7.5f, bgColor);
+    
+    //TASK 4 (normal shader)-
+    Shader *shader = new NormalShader();
+    
+    //TASK 5 (whitted integrator)
+    //Shader *shader = new WhittedIntegrator();
     //(... normal, whitted) ...
+    
 
   
 
@@ -239,11 +253,11 @@ int main()
     //---------------------------------------------------------------------------
 
     //Paint Image ONLY TASK 1
-    PaintImage(film);
+    //PaintImage(film);
 
     // Launch some rays! TASK 2,3,...   
     auto start = high_resolution_clock::now();
-    //raytrace(cam, shader, film, myScene.objectsList, myScene.LightSourceList);
+    raytrace(cam, shader, film, myScene.objectsList, myScene.LightSourceList);
     auto stop = high_resolution_clock::now();
 
     

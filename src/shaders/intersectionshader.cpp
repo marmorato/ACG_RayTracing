@@ -12,10 +12,15 @@ IntersectionShader::IntersectionShader(Vector3D hitColor_, Vector3D bgColor_) :
 Vector3D IntersectionShader::computeColor(const Ray &r, const std::vector<Shape*> &objList, const std::vector<LightSource*> &lsList) const
 {
     //(FILL..)
-        
+    
     //if..
-
+    
     //else...
-
-    return bgColor;
+    //TASK 2?
+    if (Utils::hasIntersection(r, objList)){ //returns true if the ray hits an object
+        return Vector3D(1.0,0.0,0.0); //red
+    }
+    else {
+        return Vector3D(0.0,0.0,0.0);//black
+    }
 }
