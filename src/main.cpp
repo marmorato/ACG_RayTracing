@@ -53,6 +53,8 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     Material* blueGlossy_80 = new Phong(Vector3D(0.2, 0.3, 0.5), Vector3D(0.8, 0.7, 0.5), 80);
     Material* cyandiffuse = new Phong(Vector3D(0.2, 0.8, 0.8), Vector3D(0, 0, 0), 100);
 
+    Material* emissive = new Emissive(Vector3D(25, 25, 25), Vector3D(0.5));
+
     //Task 5.3
     Material* mirror = new Mirror();
     //Task 5.4
@@ -70,12 +72,14 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     Shape* topPlan = new InfinitePlan(Vector3D(0, offset, 0), Vector3D(0, -1, 0), greyDiffuse);
     Shape* bottomPlan = new InfinitePlan(Vector3D(0, -offset, 0), Vector3D(0, 1, 0), greyDiffuse);
     Shape* backPlan = new InfinitePlan(Vector3D(0, 0, 3 * offset), Vector3D(0, 0, -1), greyDiffuse);
+    Shape* square_emissive = new Square(Vector3D(-1.0, 3.0, 3.0), Vector3D(2.0, 0.0, 0.0), Vector3D(0.0, 0.0, 2.0), Vector3D(0.0, -1.0, 0.0), emissive);
 
     myScene.AddObject(leftPlan);
     myScene.AddObject(rightPlan);
     myScene.AddObject(topPlan);
     myScene.AddObject(bottomPlan);
     myScene.AddObject(backPlan);
+    myScene.AddObject(square_emissive);
 
 
     // Place the Spheres and square inside the Cornell Box
@@ -93,12 +97,9 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     myScene.AddObject(s1);
     myScene.AddObject(s2);
     myScene.AddObject(square);
-
-    PointLightSource* myPointLight = new PointLightSource(Vector3D(0, 2.5, 3.0), Vector3D(3.0));
-    myScene.AddPointLight(myPointLight);
-
+    //PointLightSource* myPointLight = new PointLightSource(Vector3D(0, 2.5, 3.0), Vector3D(2.0));
+    //myScene.AddPointLight(myPointLight);
 }
-
 
 void buildSceneSphere(Camera*& cam, Film*& film,
     Scene myScene)

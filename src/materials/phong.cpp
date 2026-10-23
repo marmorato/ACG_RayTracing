@@ -25,7 +25,8 @@ Vector3D Phong::getReflectance(const Vector3D& n, const Vector3D& wo,
 
         // Specular component
         double specular = pow(cosAlpha, alpha);
-        Vector3D specularColor = Ks * specular;
+        double normalization = (alpha +2.0)/(2.0*M_PI);
+        Vector3D specularColor = Ks * specular * normalization;
 
         // Phong reflectance
         return diffuse + specularColor;
