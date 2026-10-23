@@ -1,6 +1,8 @@
+
 #include "phong.h"
 
 #include <iostream>
+#include <cmath>
 
 Phong::Phong()
 { }
@@ -14,14 +16,15 @@ Vector3D Phong::getReflectance(const Vector3D& n, const Vector3D& wo,
 
     //FILL(...)
     // Compute the ideal reflection direction
-        Vector3D wr = 2.0 * (n * wi) * n - wi;
+        Vector3D wr = 2.0 * dot(n, wi) * n - wi;
+        double cosAlpha = std::max(dot(wo, wr), 0.0);
+
 
         // Diffuse component
         Vector3D diffuse = rho_d / M_PI;
 
         // Specular component
-        double dotProduct = wo.x * wr.x + wo.y * wr.y + wo.z * wr.z;
-        double specular = pow(dotProduct, alpha);
+        double specular = pow(cosAlpha, alpha);
         Vector3D specularColor = Ks * specular;
 
         // Phong reflectance
@@ -48,4 +51,3 @@ Vector3D Phong::getDiffuseReflectance() const
 {
     return rho_d;
 }
-

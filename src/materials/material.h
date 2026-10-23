@@ -20,9 +20,6 @@ public:
     virtual bool hasTransmission() const = 0;
     virtual bool hasDiffuseOrGlossy() const = 0;
     virtual bool isEmissive() const = 0;
-
-
-    
 };
 
 

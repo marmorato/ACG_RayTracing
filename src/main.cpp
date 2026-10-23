@@ -22,7 +22,8 @@
 
 #include "materials/phong.h"
 #include "materials/emissive.h"
-
+#include "materials/mirror.h"
+#include "materials/transmissive.h"
 
 #include <chrono>
 
@@ -47,15 +48,15 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     /* ********* */
     Material* redDiffuse = new Phong(Vector3D(0.7, 0.2, 0.3), Vector3D(0, 0, 0), 100);
     Material* greenDiffuse = new Phong(Vector3D(0.2, 0.7, 0.3), Vector3D(0, 0, 0), 100);
-    Material* greyDiffuse = new Phong(Vector3D(0.8, 0.8, 0.8), Vector3D(0, 0, 0), 100);      
+    Material* greyDiffuse = new Phong(Vector3D(0.8, 0.8, 0.8), Vector3D(0, 0, 0), 100);
     Material* blueGlossy_20 = new Phong(Vector3D(0.2, 0.3, 0.5), Vector3D(0.8, 0.7, 0.5), 20);
     Material* blueGlossy_80 = new Phong(Vector3D(0.2, 0.3, 0.5), Vector3D(0.8, 0.7, 0.5), 80);
     Material* cyandiffuse = new Phong(Vector3D(0.2, 0.8, 0.8), Vector3D(0, 0, 0), 100);
 
     //Task 5.3
-    //Material* mirror = new Mirror();
+    Material* mirror = new Mirror();
     //Task 5.4
-    //Material* transmissive = new Transmissive(0.7);
+    Material* transmissive = new Transmissive(0.7);
 
 
     /* ******* */
@@ -78,22 +79,22 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
 
 
     // Place the Spheres and square inside the Cornell Box
-    double radius = 1;         
+    double radius = 1;
     Matrix4x4 sphereTransform1;
     sphereTransform1 = Matrix4x4::translate(Vector3D(1.5, -offset + radius, 6));
-    Shape* s1 = new Sphere(radius, sphereTransform1, blueGlossy_20); 
+    Shape* s1 = new Sphere(radius, sphereTransform1, blueGlossy_20);
 
     Matrix4x4 sphereTransform2;
     sphereTransform2 = Matrix4x4::translate(Vector3D(-1.5, -offset + 3*radius, 4));
-    Shape* s2 = new Sphere(radius, sphereTransform2, blueGlossy_80);
+    Shape* s2 = new Sphere(radius, sphereTransform2, transmissive);
 
-    Shape* square = new Square(Vector3D(offset + 0.999, -offset-0.2, 3.0), Vector3D(0.0, 4.0, 0.0), Vector3D(0.0, 0.0, 2.0), Vector3D(-1.0, 0.0, 0.0), cyandiffuse);
+    Shape* square = new Square(Vector3D(offset + 0.999, -offset-0.2, 3.0), Vector3D(0.0, 4.0, 0.0), Vector3D(0.0, 0.0, 2.0), Vector3D(-1.0, 0.0, 0.0), mirror);
 
     myScene.AddObject(s1);
     myScene.AddObject(s2);
     myScene.AddObject(square);
 
-    PointLightSource* myPointLight = new PointLightSource(Vector3D(0, 2.5, 3.0), Vector3D(2.0));
+    PointLightSource* myPointLight = new PointLightSource(Vector3D(0, 2.5, 3.0), Vector3D(3.0));
     myScene.AddPointLight(myPointLight);
 
 }
@@ -156,7 +157,7 @@ void raytrace(Camera* &cam, Shader* &shader, Film* &film,
     // Out-most loop invariant: we have rendered lin lines
     for(size_t lin=0; lin<resY; lin++)
     {
-        // Show progression 
+        // Show progression
         double progress = (double)lin / double(resY);
         Utils::printProgress(progress);
 
@@ -198,10 +199,10 @@ void PaintImage(Film* film)
             std::cout << ".";
 
         for (size_t col = 0; col < resX; col++)
-        { 
+        {
             //CHANGE...()
             double red = (double)col / resX;
-            double green = (double)lin / resY;
+                double green = (double)lin / resY;
 
                 Vector3D color(red, green, 0.0);
 
@@ -232,30 +233,30 @@ int main()
     //Shader *shader = new DepthShader (intersectionColor,7.5f, bgColor);
     
     //TASK 4 (normal shader)-
-    Shader *shader = new NormalShader();
+    //Shader *shader = new NormalShader();
     
     //TASK 5 (whitted integrator)
-    //Shader *shader = new WhittedIntegrator();
+    Shader *shader = new WhittedIntegrator();
     //(... normal, whitted) ...
     
 
   
 
     // Build the scene---------------------------------------------------------
-    // 
+    //
     // Declare pointers to all the variables which describe the scene
     Camera* cam;
     Scene myScene;
     //Create Scene Geometry and Illumiantion
-    buildSceneSphere(cam, film, myScene); //Task 2,3,4;
-    //buildSceneCornellBox(cam, film, myScene); //Task 5
+    //buildSceneSphere(cam, film, myScene); //Task 2,3,4;
+    buildSceneCornellBox(cam, film, myScene); //Task 5
 
     //---------------------------------------------------------------------------
 
     //Paint Image ONLY TASK 1
     //PaintImage(film);
 
-    // Launch some rays! TASK 2,3,...   
+    // Launch some rays! TASK 2,3,...
     auto start = high_resolution_clock::now();
     raytrace(cam, shader, film, myScene.objectsList, myScene.LightSourceList);
     auto stop = high_resolution_clock::now();

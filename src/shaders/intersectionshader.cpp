@@ -11,16 +11,17 @@ IntersectionShader::IntersectionShader(Vector3D hitColor_, Vector3D bgColor_) :
 
 Vector3D IntersectionShader::computeColor(const Ray &r, const std::vector<Shape*> &objList, const std::vector<LightSource*> &lsList) const
 {
-    //(FILL..)
-    
-    //if..
-    
+    Intersection its;
+    if (Utils::getClosestIntersection(r, objList, its)){
+        Vector3D intersection_pos = its.itsPoint;
+        Vector3D camera_origin = r.o;
+        
+        float distance = (r.o - intersection_pos).length();
+        
+        return Vector3D(0.0, 1.0 - distance/10.0, 0.0);
+        
+    }
     //else...
-    //TASK 2?
-    if (Utils::hasIntersection(r, objList)){ //returns true if the ray hits an object
-        return Vector3D(1.0,0.0,0.0); //red
-    }
-    else {
-        return Vector3D(0.0,0.0,0.0);//black
-    }
+
+    return bgColor;
 }
