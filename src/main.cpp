@@ -19,11 +19,13 @@
 #include "shaders/depthshader.h"
 #include "shaders/normalshader.h"
 #include "shaders/whittedintegrator.h"
+#include "shaders/hemisphericaldirectintegrator.h"
 
 #include "materials/phong.h"
 #include "materials/emissive.h"
 #include "materials/mirror.h"
 #include "materials/transmissive.h"
+
 
 #include <chrono>
 
@@ -173,7 +175,14 @@ void raytrace(Camera* &cam, Shader* &shader, Film* &film,
             Vector3D pixelColor = Vector3D(0.0);
 
             // Compute ray color according to the used shader
-            pixelColor += shader->computeColor(cameraRay, *objectsList, *lightSourceList);
+            //lab2
+            int nSamples = 100;
+
+            for (int s = 0; s < nSamples; s++) {
+                pixelColor += shader->computeColor(cameraRay, *objectsList, *lightSourceList);
+            }
+
+            pixelColor = pixelColor / double(nSamples);
 
             // Store the pixel color
             film->setPixelValue(col, lin, pixelColor);
@@ -237,8 +246,11 @@ int main()
     //Shader *shader = new NormalShader();
     
     //TASK 5 (whitted integrator)
-    Shader *shader = new WhittedIntegrator();
+    //Shader *shader = new WhittedIntegrator();
     //(... normal, whitted) ...
+    
+    //LAB2
+    Shader* shader = new HemisphericalDirectIntegrator();
     
 
   
