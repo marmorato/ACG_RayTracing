@@ -20,11 +20,16 @@
 #include "shaders/normalshader.h"
 #include "shaders/whittedintegrator.h"
 #include "shaders/hemisphericaldirectintegrator.h"
+#include "shaders/areadirectintegrator.h"
+
 
 #include "materials/phong.h"
 #include "materials/emissive.h"
 #include "materials/mirror.h"
 #include "materials/transmissive.h"
+
+
+#include "lightsources/arealightsource.h"
 
 
 #include <chrono>
@@ -82,8 +87,18 @@ void buildSceneCornellBox(Camera*& cam, Film*& film,
     myScene.AddObject(bottomPlan);
     myScene.AddObject(backPlan);
     myScene.AddObject(square_emissive);
+    
+    /* *********** */
+    /* Area light */
+    /* *********** */
+    AreaLightSource* areaLight = new AreaLightSource(
+        static_cast<Square*>(square_emissive)
+    );
 
-
+    myScene.LightSourceList->push_back(areaLight);
+    
+    
+    //****
     // Place the Spheres and square inside the Cornell Box
     double radius = 1;
     Matrix4x4 sphereTransform1;
@@ -176,7 +191,7 @@ void raytrace(Camera* &cam, Shader* &shader, Film* &film,
 
             // Compute ray color according to the used shader
             //lab2
-            int nSamples = 100;
+            int nSamples = 10;
 
             for (int s = 0; s < nSamples; s++) {
                 pixelColor += shader->computeColor(cameraRay, *objectsList, *lightSourceList);
@@ -250,7 +265,8 @@ int main()
     //(... normal, whitted) ...
     
     //LAB2
-    Shader* shader = new HemisphericalDirectIntegrator();
+    //Shader* shader = new HemisphericalDirectIntegrator();
+    Shader* shader = new AreaDirectIntegrator();
     
 
   
