@@ -21,7 +21,7 @@
 #include "shaders/whittedintegrator.h"
 #include "shaders/hemisphericaldirectintegrator.h"
 #include "shaders/areadirectintegrator.h"
-
+#include "shaders/purepathtracing.h"
 
 #include "materials/phong.h"
 #include "materials/emissive.h"
@@ -191,7 +191,7 @@ void raytrace(Camera* &cam, Shader* &shader, Film* &film,
 
             // Compute ray color according to the used shader
             //lab2
-            int nSamples = 10;
+            int nSamples = 100;
 
             for (int s = 0; s < nSamples; s++) {
                 pixelColor += shader->computeColor(cameraRay, *objectsList, *lightSourceList);
@@ -266,7 +266,8 @@ int main()
     
     //LAB2
     //Shader* shader = new HemisphericalDirectIntegrator();
-    Shader* shader = new AreaDirectIntegrator();
+    //Shader* shader = new AreaDirectIntegrator();
+    Shader* shader = new PurePathTracing();
     
 
   
